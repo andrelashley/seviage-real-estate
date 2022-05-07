@@ -1,0 +1,11 @@
+
+Hope you enjoy your new logo, here are the people that
+made your beautiful logo happen :)
+font name: Aileron-Heavy
+font link: http://dotcolon.net/font/aileron/
+font author: dot colon
+font author site: http://dotcolon.net/
+
+
+{"bg":"transparent","icon-gradient-0":"#0076DD","icon-gradient-1":"#00CDE9","font":"#000000","slogan":"#141414"}
+      
