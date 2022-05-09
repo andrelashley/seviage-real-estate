@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MiniValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,12 +39,18 @@ app.MapGet("/house/{houseId:int}", async (int houseId, IHouseRepository repo) =>
 
 app.MapPost("/houses", async ([FromBody] HouseDetailDto dto, IHouseRepository repo) =>
 {
+    if(!MiniValidator.TryValidate(dto, out var errors))
+        return Results.ValidationProblem(errors);
+
     var newHouse = await repo.Add(dto);
     return Results.Created($"/house/{newHouse.Id}", newHouse);
-}).Produces<HouseDetailDto>(StatusCodes.Status201Created);
+}).Produces<HouseDetailDto>(StatusCodes.Status201Created)
+.ProducesValidationProblem();
 
 app.MapPut("/houses", async ([FromBody] HouseDetailDto dto, IHouseRepository repo) =>
 {
+    if(!MiniValidator.TryValidate(dto, out var errors))
+        return Results.ValidationProblem(errors);
 
     if(await repo.Get(dto.Id) == null)
         return Results
@@ -51,7 +58,8 @@ app.MapPut("/houses", async ([FromBody] HouseDetailDto dto, IHouseRepository rep
 
     var updatedHouse = repo.Update(dto);
     return Results.Ok(updatedHouse);
-}).ProducesProblem(404).Produces<HouseDetailDto>(StatusCodes.Status200OK);
+}).ProducesProblem(404).Produces<HouseDetailDto>(StatusCodes.Status200OK)
+.ProducesValidationProblem();
 
 app.MapDelete("/houses/{houseId:int}", async (int houseId, IHouseRepository repo) =>
 {
